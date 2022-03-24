@@ -37,8 +37,8 @@ const db = require("../config/database");
     consolidação de um POLO, a partir das tabelas ATENDIMENTO e STOCK
   */
   
-      exports.listAllStock = async (req, res) => {
-      const polo = req.params.polo;
+      exports.listOneStock = async (req, res) => {
+      const polo = req.body.polo;
       const response = await db.query(
       `SELECT polo, stock, venda, dias_hab, 
               ceil(venda / dias_hab) as media,
@@ -72,12 +72,15 @@ const db = require("../config/database");
        Atualização do STOCK de um Polo na Tabela de ESTOQUE
     */
   exports.AddStock = async (req, res) => {
-  const polo = req.params.polo;
+  const polo = req.body.polo;
   const stock = req.body.stock;
  
   const response = await db.query(
     "UPDATE estoque SET stock = $1 WHERE polo LIKE '%' || $2 || '%'",
     [stock, polo]
   );
-  res.status(200).send(console.log("estoque atualizado " + response.rows+ " " +polo)) ;
+  //res.status(200).send(console.log("estoque atualizado " + response.rows+ " " +polo)) ;
+  res.status(200).send({
+    stock: [polo, stock],
+  }); 
 };
