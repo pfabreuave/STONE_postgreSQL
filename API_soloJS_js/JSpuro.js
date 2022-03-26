@@ -9,7 +9,7 @@ function fazGet(url) {
 }
 
 function creaFila(stock) {
-    console.log(stock);
+    
     fila = document.createElement("tr");
     tdPolo = document.createElement("td");
     tdStk = document.createElement("td");
