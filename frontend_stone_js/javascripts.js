@@ -75,20 +75,54 @@
 
 			/*
 				Buca un polo e devuelve un consolidado de las tabelas  de ATENDIMENTO E STOCK
-									No habilitado
+				
+					ruta para consultar un polo o un grupo pasando el parametro via body
+									
 			*/
 			
-			function busca_um_polo(j) {
-				var polom = mirror.stock[j].polo
-				var url = "http://localhost:4000/api/stock/" +polom;
-				fetch(url, {method: 'GET'})
-				.then((resp) => resp.json())
-				.then(function(data){		
-				})
+			function busca_um_polo() {
+
+				var myHeaders = new Headers();
+				myHeaders.append("Content-Type", "application/json");
+
+				var raw = JSON.stringify({
+						"polo": userpl.value
+					
+				});
+				
+				var requestOptions = {
+					method: 'POST',
+					headers: myHeaders,
+					body: raw,
+					redirect: 'follow'
+				};
+				
+				var url = "http://localhost:4000/api/stockp/";
+				fetch(url, requestOptions)
+					 .then((resp) => resp.json())
+					 .then(function(data){		
+				 	 mirror = data
+					 for(j=0;j<data.stock.length;j++){ 
+						mirror.stock[j].polo = data.stock[j].polo
+						mirror.stock[j].stock = Number(data.stock[j].stock)
+						mirror.stock[j].venda = Number(data.stock[j].venda)
+						mirror.stock[j].dias_hab = Number(data.stock[j].dias_hab)
+						mirror.stock[j].media = Number(data.stock[j].media)
+						mirror.stock[j].auto = Number(data.stock[j].auto)
+						mirror.stock[j].cat = Number(data.stock[j].cat)
+						mirror.stock[j].rep = Number(data.stock[j].rep)
+						
+						}
+					 seleccion_cuadros(7); 
+					 }) 
+					 .catch(error=>console.log(error))
+					
 			}
 		
 			/*
 			   	busca un Polo por nombre en la tabela interna
+				   				no Habilitado
+
 			*/
 					
 			function buscarPL() {
