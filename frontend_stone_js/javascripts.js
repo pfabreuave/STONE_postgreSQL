@@ -21,10 +21,11 @@
 			var area_original = document.getElementById("tabla").innerHTML;		
 			contenido.innerHTML = ' ';
 			var categoria = Number(7);		 
-			
+			var textMSJ= ' ';
 			/*
 				recibe los datos de las tabelas consolidadas de atendimientos y stock (JSON)
 			*/	
+		
 			
 			var url = "http://localhost:4000/api/stocks/";
 			fetch(url, {method: 'GET'})
@@ -40,16 +41,19 @@
 					mirror.stock[j].auto = Number(data.stock[j].auto)
 					mirror.stock[j].cat = Number(data.stock[j].cat)
 					mirror.stock[j].rep = Number(data.stock[j].rep)
+				
+				
 				}
 				seleccion_cuadros(7);		
+			
 			})
 				
 			/*
 			   	Actualiza stock
 			*/
 			function update_stock(upd_stock, j) {
-				
-				var polom = mirror.stock[j].polo 
+			
+				 
 				var myHeaders = new Headers();
 				myHeaders.append("Content-Type", "application/json");
 
@@ -66,6 +70,7 @@
 				};
 
 				
+
 				var url = "http://localhost:4000/api/stock/";
 				fetch(url, requestOptions)
 					.then(raw=>{return raw})
@@ -73,11 +78,13 @@
 					.catch(error=>console.log(error))
 			}
 
+
 			/*
 				Buca un polo e devuelve un consolidado de las tabelas  de ATENDIMENTO E STOCK
 				
 					ruta para consultar un polo o un grupo pasando el parametro via body
-									
+			
+					
 			*/
 			
 			function busca_um_polo() {
@@ -100,7 +107,9 @@
 				var url = "http://localhost:4000/api/stockp/";
 				fetch(url, requestOptions)
 					 .then((resp) => resp.json())
-					 .then(function(data){		
+					 .then(function(data){
+						 
+						
 				 	 mirror = data
 					 for(j=0;j<data.stock.length;j++){ 
 						mirror.stock[j].polo = data.stock[j].polo
@@ -119,28 +128,7 @@
 					
 			}
 		
-			/*
-			   	busca un Polo por nombre en la tabela interna
-				   				no Habilitado
-
-			*/
 					
-			function buscarPL() {
-				j = Number(0);
-				userpl = document.getElementById("userpl");
-				for(j=0;j<mirror.stock.length;j++) {
-						if (userpl.value == mirror.stock[j].polo){
-							buscack(j)
-							j = 1 + mirror.stock.length;
-							document.getElementById("userpl").value = "";
-						};
-					};
-					if (j <= mirror.stock.length) {
-						alert("Com licença, " +userpl.value+
-						"  não encontrado,\ntente com otro,\n				                                    Obrigado ");
-						document.getElementById("userpl").value = "";
-					};			
-			}
 
 			/*
 			   	busca un Polo onclick en la tabela interna	   
@@ -151,46 +139,32 @@
 					document.getElementById('registro_'+j).className = 'parpadea';
 					document.getElementById('reg_'+j).style.backgroundColor=cols[mirror.stock[j].cat];
 				}
-				
-				var respuesta =	confirm("Polo = "+mirror.stock[j].polo+
-								"\nCategoria = "+catg[mirror.stock[j].cat]+
-								"\nStock = "+mirror.stock[j].stock+" unidades"+
-								"\nVendas = "+mirror.stock[j].venda+" unidades"+
-								"\nMedia = "+mirror.stock[j].media+" unidades por dia"+
-								"\nAutonomia = "+mirror.stock[j].auto+" Dias"+
-								"\nReposicao = "+mirror.stock[j].rep+" unidades"+
-								"\n"+
-								"\n Se voce deseja atualizar o estoque, Confirme");
-
-				if(respuesta) {
-					var upd_stock = (mirror.stock[j].rep + " e o valor sugerido,");
-			 		var nupd_stock = prompt (upd_stock +" se voce deseja alterar, insira um novo valor ")
-			 		if (nupd_stock != 0){
-						mirror.stock[j].rep = Number(nupd_stock)
-						mirror.stock[j].stock = Number((mirror.stock[j].rep + mirror.stock[j].stock))
-						mirror.stock[j].auto = Math.round(mirror.stock[j].stock / mirror.stock[j].media)
-						mirror.stock[j].rep = Number(0)
-						if (mirror.stock[j].auto < 10){ 
-					 		mirror.stock[j].cat= Number(1);
-					 		mirror.stock[j].rep = Number((14 - mirror.stock[j].auto) * mirror.stock[j].media);	 
-						}
-						if ((mirror.stock[j].auto >= 10) && (mirror.stock[j].auto <= 13)){
-						 	 mirror.stock[j].cat= Number(2);
-					 		 mirror.stock[j].rep = Number((14 - mirror.stock[j].auto) * mirror.stock[j].media);
-						}
-						if ((mirror.stock[j].auto >= 14) && (mirror.stock[j].auto <= 18)){
-							 mirror.stock[j].cat= Number(3);
-							 mirror.stock[j].rep = Number(0);
-						}
-						if ((mirror.stock[j].auto >= 19) && (mirror.stock[j].auto <= 23)){
-					 		 mirror.stock[j].cat= Number(4);
-					 		 mirror.stock[j].rep = Number((14 - mirror.stock[j].auto) * mirror.stock[j].media);	
-						}
-						if (mirror.stock[j].auto > 23){
-					 		mirror.stock[j].cat= Number(5);
-					 		mirror.stock[j].rep = Number((14 - mirror.stock[j].auto) * mirror.stock[j].media);	 
-						}
-			 		}
+				contenido.innerHTML = ' ';
+				textMSJ = "==>(ANTES)";
+				seleccion_polo(j)
+				var upd_stock = (mirror.stock[j].rep + " e o valor sugerido,");
+			 	var nupd_stock = prompt (upd_stock +" se voce deseja alterar, insira um novo valor ")
+			 	if (nupd_stock != 0){	
+					mirror.stock[j].stock = (Number(nupd_stock) + mirror.stock[j].stock)
+					mirror.stock[j].auto = Math.round(mirror.stock[j].stock / mirror.stock[j].media)
+					mirror.stock[j].rep = Number((14 - mirror.stock[j].auto) * mirror.stock[j].media)
+					if (mirror.stock[j].auto < 10){ 
+					 	mirror.stock[j].cat= Number(1);
+					}
+					if ((mirror.stock[j].auto >= 10) && (mirror.stock[j].auto <= 13)){
+						mirror.stock[j].cat= Number(2);
+					}
+					if ((mirror.stock[j].auto >= 14) && (mirror.stock[j].auto <= 18)){
+						mirror.stock[j].cat= Number(3);
+						mirror.stock[j].rep = Number(0);
+					}
+					if ((mirror.stock[j].auto >= 19) && (mirror.stock[j].auto <= 23)){
+					 	mirror.stock[j].cat= Number(4);
+					}
+					if (mirror.stock[j].auto > 23){
+					 	mirror.stock[j].cat= Number(5);
+					}
+			 	}
 				 	else { 
 						mirror.stock[j].stock = Number((mirror.stock[j].rep + mirror.stock[j].stock))
 						mirror.stock[j].rep = Number(0)
@@ -202,12 +176,10 @@
 						AQUI LLAMADO AL UPDATE
 				*/
 
-					update_stock(+mirror.stock[j].stock, j)
-					confirm("stock atualizado com " +mirror.stock[j].stock +" unidades; nova categoria " +catg[mirror.stock[j].cat][0])
-					seleccion_polo(j)
-		 		} else {
-					alert("Voce nao aceitou."); 						
-		 		}            
+				update_stock(+mirror.stock[j].stock, j)
+				textMSJ = "==>(DESPUES)"
+				seleccion_polo(j)
+		 		 
 			}
 
 			/*
@@ -266,9 +238,8 @@
 			*/
 	
 			function seleccion_polo(j) {	
-				contenido.innerHTML = ' ';
 				contenido.innerHTML +=` <div>
-					<a class='mcard${mirror.stock[j].cat}'>  ${mirror.stock[j].polo} </a>
+					<a class='mcard${mirror.stock[j].cat}'>  ${mirror.stock[j].polo}\n${textMSJ} </a>
 					<a class="mcard">STOCK  = ${mirror.stock[j].stock} </a>
 					<a class="mcard">VENDAS = ${mirror.stock[j].venda} </a>
 					<a class="mcard">DIAS-HAB = ${mirror.stock[j].dias_hab} </a>
