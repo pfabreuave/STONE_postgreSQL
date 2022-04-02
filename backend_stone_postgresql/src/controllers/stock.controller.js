@@ -3,8 +3,11 @@
 */
 
 const db = require("../config/database");
+
 /*
   consolidação de todos os POLOS das tabelas ATENDIMENTO e STOCK
+  se toma como base los dias en que occurrieron ventas
+
 */
     exports.SumAllStock = async (req, res) => {
     const response = await db.query(
@@ -35,9 +38,10 @@ const db = require("../config/database");
 
   /*
     consolidação de um POLO, a partir das tabelas ATENDIMENTO e STOCK
+    se toma como base los dias en que occurrieron ventas
   */
   
-      exports.listOneStock = async (req, res) => {
+      exports.ListOneStock = async (req, res) => {
       const polo = req.body.polo;
       const response = await db.query(
       `SELECT polo, stock, venda, dias_hab, 
@@ -71,7 +75,7 @@ const db = require("../config/database");
     /*
        Atualização do STOCK de um Polo na Tabela de ESTOQUE
     */
-  exports.AddStock = async (req, res) => {
+  exports.UpdStock = async (req, res) => {
   const polo = req.body.polo;
   const stock = req.body.stock;
  
@@ -84,3 +88,5 @@ const db = require("../config/database");
     stock: [polo, stock],
   }); 
 };
+
+

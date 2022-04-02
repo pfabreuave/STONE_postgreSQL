@@ -27,6 +27,7 @@
 			*/	
 		
 			
+			//var url = "http://localhost:4000/api/stockhs/";
 			var url = "http://localhost:4000/api/stocks/";
 			fetch(url, {method: 'GET'})
 				.then((resp) => resp.json())
@@ -104,6 +105,7 @@
 					redirect: 'follow'
 				};
 				
+				//var url = "http://localhost:4000/api/stockhp/";
 				var url = "http://localhost:4000/api/stockp/";
 				fetch(url, requestOptions)
 					 .then((resp) => resp.json())
